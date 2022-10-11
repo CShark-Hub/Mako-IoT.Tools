@@ -5,7 +5,7 @@ steps:
 - task: InstallnFBuildComponents@1
   displayName: Install nanoFramework MSBuild components
   env:
-    GITHUB_TOKEN: $(github_nuget_token)
+    GITHUB_TOKEN: $(githubToken)
 
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
@@ -43,5 +43,5 @@ steps:
     command: 'custom' 
     arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion)'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName)*.nupkg -Source mako-iot -ApiKey $(github_nuget_token)
+- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName)*.nupkg -Source mako-iot -ApiKey $(githubToken)
   displayName: nuget push

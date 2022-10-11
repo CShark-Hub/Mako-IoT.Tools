@@ -5,7 +5,7 @@ steps:
 - task: InstallnFBuildComponents@1
   displayName: Install nanoFramework MSBuild components
   env:
-    GITHUB_TOKEN: $(github_nuget_token)
+    GITHUB_TOKEN: $(githubToken)
 
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
