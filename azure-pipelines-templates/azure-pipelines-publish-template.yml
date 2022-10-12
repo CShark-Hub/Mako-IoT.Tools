@@ -24,7 +24,7 @@ steps:
     restoreSolution: '$(solution)'
     feedsToUse: 'config'
     nugetConfigPath: 'nuget.config'
-    externalFeedCredentials: 'CSharkGithubNuget'
+    externalFeedCredentials: 'CSharkGithubNuget2'
 
 - script: nbgv cloud -a -c
   displayName: Set Version
