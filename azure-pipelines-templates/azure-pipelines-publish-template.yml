@@ -43,5 +43,5 @@ steps:
     command: 'custom' 
     arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion)'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName)*.nupkg -Source mako-iot -ApiKey $(githubToken)
+- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
   displayName: nuget push
