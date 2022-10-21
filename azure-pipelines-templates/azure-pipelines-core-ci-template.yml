@@ -2,6 +2,12 @@ steps:
 - checkout: self
   fetchDepth: 0
 
+- task: UseDotNet@2
+  displayName: Use .NET 6.0
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+          
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
 
@@ -14,26 +20,21 @@ steps:
     nugetConfigPath: 'nuget.config'
     externalFeedCredentials: 'CSharkGithubNuget2'
 
-- task: VSBuild@1
-  displayName: Build solution
+- task: DotNetCoreCLI@2
+  displayName: Build
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
+    command: 'build'
+    projects: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArchitecture: x64
-
-- task: VSTest@2
-  displayName: Run tests
-  continueOnError: false
+          
+- task: DotNetCoreCLI@2
+  displayName: 'Tests Unit'
   inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      $(System.DefaultWorkingDirectory)\Tests\**\NFUnitTest.dll
-      $(System.DefaultWorkingDirectory)\Tests\**\*Test*.dll
-      !**\DeviceTest.dll
-      !**\obj\**
-      !**\TestAdapter\**
-      !**\NFUnitTest_DummyAdapter\**
-      !**\nanoFramework.TestFramework\**    
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    arguments: '--configuration $(buildConfiguration)'
+    publishTestResults: true
+    projects: |
+      $(System.DefaultWorkingDirectory)\Tests\**\*Test*.csproj
+      **/*Tests.Unit.csproj
+      !**/obj/**
+      !**/bin/**/ref/**         
