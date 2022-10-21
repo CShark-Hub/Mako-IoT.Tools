@@ -1,0 +1,39 @@
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- task: NuGetToolInstaller@1
+  displayName: Install NuGet
+
+- task: NuGetCommand@2
+  displayName: Restore NuGet packages
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(solution)'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config'
+    externalFeedCredentials: 'CSharkGithubNuget2'
+
+- task: VSBuild@1
+  displayName: Build solution
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    msbuildArchitecture: x64
+
+- task: VSTest@2
+  displayName: Run tests
+  continueOnError: false
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      $(System.DefaultWorkingDirectory)\Tests\**\NFUnitTest.dll
+      $(System.DefaultWorkingDirectory)\Tests\**\*Test*.dll
+      !**\DeviceTest.dll
+      !**\obj\**
+      !**\TestAdapter\**
+      !**\NFUnitTest_DummyAdapter\**
+      !**\nanoFramework.TestFramework\**    
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'

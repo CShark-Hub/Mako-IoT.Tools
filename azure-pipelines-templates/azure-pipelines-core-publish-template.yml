@@ -1,0 +1,42 @@
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- task: NuGetToolInstaller@1
+  displayName: Install NuGet
+
+- task: DotNetCoreCLI@2  
+  displayName: Install NBGV tool
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --tool-path . nbgv --ignore-failed-sources
+
+- task: NuGetCommand@2
+  displayName: Restore NuGet packages
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(solution)'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config'
+    externalFeedCredentials: 'CSharkGithubNuget2'
+
+- script: nbgv cloud -a -c
+  displayName: Set Version
+
+- task: VSBuild@1
+  displayName: Build solution
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    msbuildArchitecture: x64
+
+- task: NuGetCommand@2
+  displayName: Nuget Pack
+  inputs:
+    command: 'custom' 
+    arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion)'
+
+- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
+  displayName: nuget push
