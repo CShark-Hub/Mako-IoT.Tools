@@ -1,6 +1,12 @@
 steps:
 - checkout: self
   fetchDepth: 0
+  
+- task: UseDotNet@2
+  displayName: Use .NET 6.0
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'  
 
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
@@ -24,13 +30,12 @@ steps:
 - script: nbgv cloud -a -c
   displayName: Set Version
 
-- task: VSBuild@1
-  displayName: Build solution
+- task: DotNetCoreCLI@2
+  displayName: Build
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
+    command: 'build'
+    projects: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArchitecture: x64
 
 - task: NuGetCommand@2
   displayName: Nuget Pack
