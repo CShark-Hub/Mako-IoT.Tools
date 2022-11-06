@@ -57,7 +57,7 @@ If (!(Test-CommandExists "gh"))
 
 $request = "https://api.github.com/repos/$organization/$baseRepository/forks?per_page=100"
 Write-Host "Executing request "$request
-$tokenHeader = "Bearer "$gitHubToken
+$tokenHeader = "Bearer $gitHubToken"
 $response = Invoke-WebRequest -Uri $request -Headers @{"Authorization"=$tokenHeader}
 $repositories = $response | ConvertFrom-Json
 
