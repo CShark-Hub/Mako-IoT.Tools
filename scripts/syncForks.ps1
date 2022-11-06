@@ -1,5 +1,3 @@
-#.\syncForks.ps1 -organization "CShark-Hub" -baseRepository "Mako-IoT.Base" -targetBranch "main" -gitHubToken "token"
-
 param(
 [Parameter(Mandatory=$true)][String]$organization,
 [Parameter(Mandatory=$true)][String]$baseRepository,
@@ -7,6 +5,28 @@ param(
 [Parameter(Mandatory=$true)][String]$gitHubToken)
 
 $ErrorActionPreference = "Stop"
+
+Function Test-CommandExists
+{
+ Param ($command)
+ $oldPreference = $ErrorActionPreference
+ $ErrorActionPreference = ‘stop’
+ try 
+ {
+    if(Get-Command $command)
+    {
+        return $true
+    }
+ }
+ Catch 
+ {
+    return $false
+ }
+ Finally 
+ {
+    $ErrorActionPreference=$oldPreference
+ }
+}
 
 Write-Host "Running script with parameters: "
 Write-Host "Organization: $organization"
@@ -17,13 +37,24 @@ Write-Debug "Github token: $gitHubToken"
 Write-Host ""
 Write-Host ""
 
-#If not installed
-#Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-#irm get.scoop.sh | iex
-#scoop bucket add github-gh https://github.com/cli/scoop-gh.git
-#scoop install gh
+#if GitHub CLI is not installed
+If (!(Test-CommandExists "gh"))
+{
+    #if scoop is not installed
+    If (!(Test-CommandExists "scoop"))
+    {
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+        irm get.scoop.sh | iex
+    }
 
-$response = Invoke-WebRequest -Uri "https://api.github.com/repos/$organization/$baseRepository/forks?per_page=100" -Headers @{"Authorization"="Bearer $token"}
+    scoop bucket add github-gh https://github.com/cli/scoop-gh.git
+    scoop install gh
+}
+
+$request = "https://api.github.com/repos/$organization/$baseRepository/forks?per_page=100"
+Write-Host "Executing request "$request
+$tokenHeader = "Bearer $token"
+$response = Invoke-WebRequest -Uri $request -Headers @{"Authorization"=$tokenHeader}
 $repositories = $response | ConvertFrom-Json
 
 $syncError = $false
