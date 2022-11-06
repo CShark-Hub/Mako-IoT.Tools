@@ -40,20 +40,24 @@ Write-Host ""
 #if GitHub CLI is not installed
 If (!(Test-CommandExists "gh"))
 {
+    Write-Information "GH command not exists. Trying to install."
     #if scoop is not installed
     If (!(Test-CommandExists "scoop"))
     {
+        Write-Information "Scoop command not exists. Trying to install."
         Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         irm get.scoop.sh | iex
+        Write-Information "Scoop installed."
     }
 
     scoop bucket add github-gh https://github.com/cli/scoop-gh.git
     scoop install gh
+    Write-Information "GH installed."
 }
 
 $request = "https://api.github.com/repos/$organization/$baseRepository/forks?per_page=100"
 Write-Host "Executing request "$request
-$tokenHeader = "Bearer $token"
+$tokenHeader = "Bearer "$token
 $response = Invoke-WebRequest -Uri $request -Headers @{"Authorization"=$tokenHeader}
 $repositories = $response | ConvertFrom-Json
 
