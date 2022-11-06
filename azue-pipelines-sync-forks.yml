@@ -1,0 +1,36 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+schedules:
+- cron: "0 12 * * *"
+  displayName: Daily build
+  branches:
+    include:
+    - main
+
+variables:
+- group: mako-iot-github
+- name: Organization
+  value: 'CShark-Hub'
+- name: BaseForkRepository
+  value: 'Mako-IoT.Base'
+- name: TargetBranch
+  value: 'main'
+
+pool:
+  vmImage: ubuntu-latest
+ 
+steps:
+- task: PowerShell@2
+  displayName: Run sync script
+  env:
+    GH_TOKEN: $(githubToken)
+  inputs:
+    filePath: 'scripts/syncForks.ps1'
+    arguments: '-organization $(Organization) -baseRepository $(BaseForkRepository) -targetBranch $(TargetBranch) -gitHubToken $(githubToken)'
+    failOnStderr: true
+    showWarnings: true
