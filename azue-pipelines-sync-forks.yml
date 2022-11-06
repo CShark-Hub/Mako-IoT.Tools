@@ -24,7 +24,7 @@ steps:
   env:
     GH_TOKEN: $(githubToken)
   inputs:
-    filePath: 'scripts\syncForks.ps1'
+    filePath: 'scripts/syncForks.ps1'
     arguments: '-organization $(Organization) -baseRepository $(BaseForkRepository) -targetBranch $(TargetBranch) -gitHubToken $(githubToken)'
     failOnStderr: true
     showWarnings: true
