@@ -4,16 +4,29 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+- none
+
+variables:
+- group: mako-iot-github
+- name: Organization
+  value: 'CShark-Hub'
+- name: BaseForkRepository
+  value: 'Mako-IoT.Base'
+- name: TargetBranch
+  value: 'main'
+- name: BaseForkRepository
+  value: 'Mako-IoT.Base'
 
 pool:
   vmImage: ubuntu-latest
-
+ 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: PowerShell@2
+  displayName: Run sync script
+  env:
+    GH_TOKEN: $(githubToken)
+  inputs:
+    filePath: 'scripts\syncForks.ps1'
+    arguments: '-organization $(Organization) -baseRepository $(BaseForkRepository) -targetBranch $(TargetBranch) -gitHubToken $(githubToken)'
+    failOnStderr: true
+    showWarnings: true
