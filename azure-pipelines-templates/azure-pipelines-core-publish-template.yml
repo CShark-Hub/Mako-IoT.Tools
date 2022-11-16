@@ -10,6 +10,10 @@ steps:
 
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
+  
+- task: NuGetAuthenticate@1
+  inputs:
+    nuGetServiceConnections: 'CSharkGithubNuget2'
 
 - task: DotNetCoreCLI@2  
   displayName: Install NBGV tool
