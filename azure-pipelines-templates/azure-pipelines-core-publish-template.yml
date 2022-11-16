@@ -11,10 +11,6 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
   
-- task: NuGetAuthenticate@1
-  inputs:
-    nuGetServiceConnections: 'CSharkGithubNuget2'
-
 - task: DotNetCoreCLI@2  
   displayName: Install NBGV tool
   inputs:
@@ -44,9 +40,5 @@ steps:
     versionEnvVar: 'NBGV_Version'
     buildProperties: 'SymbolPackageFormat=snupkg'
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'CSharkGithubNuget2'
+- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -Source mako-iot -ApiKey $(githubToken)
+  displayName: nuget push
