@@ -40,5 +40,9 @@ steps:
     versionEnvVar: 'NBGV_Version'
     buildProperties: 'SymbolPackageFormat=snupkg'
 
-- script: nuget push **/*.nupkg -Source mako-iot -ApiKey $(githubToken)
-  displayName: nuget push
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'CSharkGithubNuget2'
