@@ -31,13 +31,13 @@ steps:
   displayName: Set Version
   
 - task: DotNetCoreCLI@2
-  displayName: 'Pack NuGet version $(nugetVersion)'
+  displayName: 'Pack NuGet version $(NBGV_Version)'
   inputs:
     command: 'pack'
     packagesToPack: '**/$(nugetProjectName)'
     includesymbols: true
     versioningScheme: 'byEnvVar'
-    versionEnvVar: 'version'
+    versionEnvVar: 'NBGV_Version'
     buildProperties: 'SymbolPackageFormat=snupkg'
 
 - script: nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -Source mako-iot -ApiKey $(githubToken)
