@@ -22,26 +22,23 @@ steps:
   displayName: Restore NuGet packages
   inputs:
     command: 'restore'
-    restoreSolution: '$(solution)'
+    restoreSolution: '**/$(nugetProjectName)'
     feedsToUse: 'config'
     nugetConfigPath: 'nuget.config'
     externalFeedCredentials: 'CSharkGithubNuget2'
 
 - script: nbgv cloud -a -c
   displayName: Set Version
-
+  
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: 'Pack NuGet version $(nugetVersion)'
   inputs:
-    command: 'build'
-    projects: '$(solution)'
-    configuration: '$(buildConfiguration)'
+    command: 'pack'
+    packagesToPack: '**/$(nugetProjectName)'
+    includesymbols: true
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'version'
+    buildProperties: 'SymbolPackageFormat=snupkg'
 
-- task: NuGetCommand@2
-  displayName: Nuget Pack
-  inputs:
-    command: 'custom' 
-    arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion)'
-
-- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
+- script: nuget push $(Build.ArtifactStagingDirectory)/*.nupkg -Source mako-iot -ApiKey $(githubToken)
   displayName: nuget push
