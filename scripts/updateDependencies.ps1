@@ -2,7 +2,7 @@ param(
 [Parameter(Mandatory=$true)][String]$organization,
 [Parameter(Mandatory=$true)][String]$gitHubToken)
 
-
+$ErrorActionPreference = "Stop"
 
 Function Test-CommandExists
 {
@@ -38,9 +38,9 @@ $env:GITHUB_TOKEN = $gitHubToken
 
 If (!(Test-CommandExists "nanodu"))
 {
-    Write-Information "nanodu command not exists. Trying to install."
-    Invoke-Command "dotnet tool install -g nanodu"
-    Write-Information "nanodu installed."
+    Write-Host "nanodu command not exists. Trying to install."
+    dotnet tool install nanodu -g --add-source https://pkgs.dev.azure.com/nanoframework/feed/_packaging/sandbox/nuget/v3/index.json
+    Write-Host "nanodu installed."
 }
 $request = "https://api.github.com/orgs/$organization/repos?per_page=100"
 Write-Host "Executing request "$request
