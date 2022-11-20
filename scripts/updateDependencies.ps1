@@ -37,6 +37,8 @@ $env:GIT_REDIRECT_STDERR = '2>&1'
 $env:GITHUB_TOKEN = $gitHubToken
 
 # these variables are only available on Azure Pipelines build
+Write-Host "Build number"
+Write-Host $env:Build_BuildNumber
 if ($null -ne $env:Build_BuildNumber)
 {
     Write-Host "Setting global git username"
