@@ -37,7 +37,7 @@ $env:GIT_REDIRECT_STDERR = '2>&1'
 $env:GITHUB_TOKEN = $gitHubToken
 
 Write-Host "Setting global git username"
-git config --global --add url."git@github.com:"
+git config --global --add url."git@github.com:".insteadOf "https://github.com/"
 
 If (!(Test-CommandExists "nanodu"))
 {
