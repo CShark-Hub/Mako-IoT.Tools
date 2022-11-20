@@ -36,6 +36,13 @@ Write-Host ""
 $env:GIT_REDIRECT_STDERR = '2>&1'
 $env:GITHUB_TOKEN = $gitHubToken
 
+# these variables are only available on Azure Pipelines build
+if ($null -ne $env:Agent_HomeDirectory -And $null -ne $env:Build_BuildNumber)
+{
+    Write-Host "nanodu command not exists. Trying to install."
+    git config --global --add url."git@github.com:"
+}
+
 If (!(Test-CommandExists "nanodu"))
 {
     Write-Host "nanodu command not exists. Trying to install."

@@ -10,10 +10,6 @@ variables:
 - group: mako-iot-github
 - name: Organization
   value: 'CShark-Hub'
-- name: BaseForkRepository
-  value: 'Mako-IoT.Base'
-- name: TargetBranch
-  value: 'main'
 
 pool:
   vmImage: ubuntu-latest
