@@ -1,6 +1,7 @@
 param(
 [Parameter(Mandatory=$true)][String]$organization,
-[Parameter(Mandatory=$true)][String]$gitHubToken)
+[Parameter(Mandatory=$true)][String]$gitHubToken,
+[Parameter(Mandatory=$true)][String]$gitHubUser)
 
 $ErrorActionPreference = "Stop"
 
@@ -28,6 +29,7 @@ Function Test-CommandExists
 
 Write-Host "Running script with parameters: "
 Write-Host "Organization: $organization"
+Write-Host "Github user: $gitHubUser"
 Write-Host "Github token lenght: "$gitHubToken.Length
 Write-Debug "Github token: $gitHubToken"
 Write-Host ""
@@ -65,7 +67,10 @@ foreach ($repository in $repositories)
             Remove-Item -Recurse -Force $repository.name
         }
 
-        git clone $repository.clone_url $repository.name
+        $repoName = $repository.full_name
+        $command = "https://${gitHubUser}:${gitHubToken}@github.com/${repoName}.git"
+        Write-Host $command
+        git clone $command $repository.name
         if (!(Test-Path -Path $repository.name))
         {
             Write-Error "Path does not exists after cloning."
