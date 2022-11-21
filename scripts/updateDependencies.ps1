@@ -50,8 +50,6 @@ $tokenHeader = "Bearer $gitHubToken"
 $response = Invoke-WebRequest -Uri $request -Headers @{"Authorization"=$tokenHeader}
 $repositories = $response | ConvertFrom-Json
 
-
-$updateError = $false
 foreach ($repository in $repositories)
 {
     if ($repository.full_name -notlike "*Mako-IoT.Device*")
@@ -60,28 +58,18 @@ foreach ($repository in $repositories)
     }
 
     Write-Host "Trying to update"$repository.full_name
-    try
+
+    if (Test-Path -Path $repository.name)
     {
-        if (Test-Path -Path $repository.name)
-        {
-            Remove-Item -Recurse -Force $repository.name
-        }
-        
-        Invoke-Expression "nanodu --git-hub-user $(gitHubUser) --repos-to-update $(repository.name)"
-    }
-    catch
-    {
-        $updateError = $true
-        Write-Warning "Unable to update" $repository.full_name
-        Write-Warning $Error[0]
+        Remove-Item -Recurse -Force $repository.name
     }
 
-    return;
-}
+    $Expr  = 'nanodu --git-hub-user $gitHubUser --repos-to-update $repository.name'
+    Invoke-Expression $Expr
 
-if ($updateError -eq $true)
-{
-    Write-Error "Unable to update repositories. Check warning messages."
+    if(-not $Success){
+        Write-Error "Error when trying to update repository"
+    }
 }
 
 Write-Host "Done"
