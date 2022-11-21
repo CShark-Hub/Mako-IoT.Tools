@@ -67,8 +67,7 @@ foreach ($repository in $repositories)
             Remove-Item -Recurse -Force $repository.name
         }
         
-        Write-Host ($repository.name)
-        nanodu --git-hub-user $(gitHubUser) --repos-to-update $(repository.name)
+        Invoke-Expression "nanodu --git-hub-user $(gitHubUser) --repos-to-update $(repository.name)"
     }
     catch
     {
