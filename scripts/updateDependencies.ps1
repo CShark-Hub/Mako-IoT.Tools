@@ -64,14 +64,9 @@ foreach ($repository in $repositories)
         {
             Remove-Item -Recurse -Force $repository.name
         }
-
-        git clone $repository.clone_url $repository.name
-        if (!(Test-Path -Path $repository.name))
-        {
-            Write-Error "Path does not exists after cloning."
-        }
-
-        nanodu --solutions-to-check *.sln
+        
+        Write-Host ($repository.name)
+        nanodu --git-hub-user $(gitHubUser) --repos-to-update $(repository.name)
     }
     catch
     {

@@ -10,6 +10,7 @@ variables:
 - group: mako-iot-github
 - name: Organization
   value: 'CShark-Hub'
+- GitHubUser: torbacz
 
 pool:
   vmImage: ubuntu-latest
@@ -19,6 +20,6 @@ steps:
   displayName: Run update script
   inputs:
     filePath: 'scripts/updateDependencies.ps1'
-    arguments: '-organization $(Organization) -gitHubToken $(githubToken)'
+    arguments: '-organization $(Organization) -gitHubToken $(githubToken) -gitHubUser $(GitHubUser)'
     failOnStderr: true
     showWarnings: true
