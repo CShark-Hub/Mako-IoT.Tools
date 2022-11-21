@@ -14,7 +14,7 @@ variables:
   value: 'torbacz'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
  
 steps:
 - task: PowerShell@2
