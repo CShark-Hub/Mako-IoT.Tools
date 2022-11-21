@@ -10,7 +10,8 @@ variables:
 - group: mako-iot-github
 - name: Organization
   value: 'CShark-Hub'
-- GitHubUser: torbacz
+- name: GitHubUser
+  value: 'torbacz'
 
 pool:
   vmImage: ubuntu-latest
