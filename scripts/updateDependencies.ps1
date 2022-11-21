@@ -1,6 +1,7 @@
 param(
 [Parameter(Mandatory=$true)][String]$organization,
-[Parameter(Mandatory=$true)][String]$gitHubToken)
+[Parameter(Mandatory=$true)][String]$gitHubToken,
+[Parameter(Mandatory=$true)][String]$gitHubUser)
 
 $ErrorActionPreference = "Stop"
 
@@ -28,6 +29,7 @@ Function Test-CommandExists
 
 Write-Host "Running script with parameters: "
 Write-Host "Organization: $organization"
+Write-Host "GitHub user: $gitHubUser"
 Write-Host "Github token lenght: "$gitHubToken.Length
 Write-Debug "Github token: $gitHubToken"
 Write-Host ""
