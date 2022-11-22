@@ -13,6 +13,7 @@ variables:
 - name: GitHubUser
   value: 'torbacz'
 
+
 pool:
   vmImage: windows-latest
  
@@ -21,6 +22,6 @@ steps:
   displayName: Run update script
   inputs:
     filePath: 'scripts/updateDependencies.ps1'
-    arguments: '-organization $(Organization) -gitHubToken $(githubToken) -gitHubUser $(GitHubUser)'
+    arguments: '-organization $(Organization) -gitHubToken $(githubToken1) -gitHubUser $(GitHubUser1)'
     failOnStderr: true
     showWarnings: true
