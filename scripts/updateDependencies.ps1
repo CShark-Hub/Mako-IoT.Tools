@@ -70,6 +70,8 @@ foreach ($repository in $repositories)
     if(-not $Success){
         Write-Error "Error when trying to update repository"
     }
+    
+    break;
 }
 
 Write-Host "Done"
