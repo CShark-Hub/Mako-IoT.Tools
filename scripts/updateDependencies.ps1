@@ -64,7 +64,7 @@ foreach ($repository in $repositories)
         Remove-Item -Recurse -Force $repository.name
     }
 
-    $Expr  = 'nanodu --git-hub-user $gitHubUser --repos-to-update $repository.name'
+    $Expr  = 'nanodu --git-hub-user $gitHubUser --use-git-token-for-clone true --repos-to-update $repository.name'
     Invoke-Expression $Expr
 
     if(-not $Success){
