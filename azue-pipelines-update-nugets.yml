@@ -22,12 +22,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      git clone https://github.com/CShark-Hub/Mako-IoT.Device.Services.Interface.git Mako-IoT.Device.Services.Interface
+      git clone https://$(githubToken)@github.com/CShark-Hub/Mako-IoT.Device.Services.Interface.git Mako-IoT.Device.Services.Interface
 
 - task: PowerShell@2
   displayName: Run update script
   inputs:
     filePath: 'scripts/updateDependencies.ps1'
-    arguments: '-organization $(Organization) -gitHubToken $(githubToken1) -gitHubUser $(GitHubUser1)'
+    arguments: '-organization $(Organization) -gitHubToken $(githubToken) -gitHubUser $(GitHubUser)'
     failOnStderr: true
     showWarnings: true
