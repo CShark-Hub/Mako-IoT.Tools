@@ -67,11 +67,12 @@ foreach ($repository in $repositories)
     $Expr  = 'nanodu --git-hub-user $gitHubUser --use-git-token-for-clone true --repos-to-update $repository.name'
     Invoke-Expression $Expr
 
-    if(-not $Success){
-        Write-Error "Error when trying to update repository"
-    }
+    #TODO: Error handling
+    #if(-not $Success){
+    #    Write-Error "Error when trying to update repository"
+    #}
     
-    break;
+    #break;
 }
 
 Write-Host "Done"
