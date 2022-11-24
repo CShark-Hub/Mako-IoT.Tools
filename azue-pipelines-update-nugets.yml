@@ -15,7 +15,7 @@ variables:
 - name: NuGetSource
   value: 'https://nuget.pkg.github.com/CShark-Hub/index.json'
 - name: NuGetFeedName
-  value: 'CsharkMakoIoT'
+  value: 'mako-iot'
 
 pool:
   vmImage: ubuntu-latest
