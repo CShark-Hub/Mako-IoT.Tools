@@ -43,6 +43,7 @@ If (!(Test-CommandExists "nanodu"))
     Write-Host "nanodu command not exists. Trying to install."
     dotnet tool install nanodu -g --add-source https://pkgs.dev.azure.com/nanoframework/feed/_packaging/sandbox/nuget/v3/index.json
     Write-Host "nanodu installed."
+    #TODO: remove nanoframework feed to keep config clean
 }
 $request = "https://api.github.com/orgs/$organization/repos?per_page=100"
 Write-Host "Executing request "$request
