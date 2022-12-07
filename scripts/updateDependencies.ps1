@@ -41,8 +41,10 @@ $env:GITHUB_TOKEN = $gitHubToken
 If (!(Test-CommandExists "nanodu"))
 {
     Write-Host "nanodu command not exists. Trying to install."
-    dotnet tool install nanodu -g --add-source https://pkgs.dev.azure.com/nanoframework/feed/_packaging/sandbox/nuget/v3/index.json
+    dotnet nuget add source https://pkgs.dev.azure.com/nanoframework/feed/_packaging/sandbox/nuget/v3/index.json --name nano
+    dotnet tool install nanodu -g
     Write-Host "nanodu installed."
+    dotnet nuget remove source nano
     #TODO: remove nanoframework feed to keep config clean
 }
 $request = "https://api.github.com/orgs/$organization/repos?per_page=100"
@@ -58,10 +60,10 @@ foreach ($repository in $repositories)
         continue;
     }
 
-    #if ($repository.full_name -notlike "*Mako-IoT.Device*")
-    #{
-        #continue;
-    #}
+    if ($repository.full_name -notlike "*Mako-IoT.Device*")
+    {
+        continue;
+    }
     $env:NF_Library = $repository.name
 
     Write-Host "Trying to update"$repository.full_name
@@ -81,5 +83,33 @@ foreach ($repository in $repositories)
     
     #break;
 }
+
+# close any PR
+foreach ($repository in $repositories)
+{
+    $repoName = $repository.name
+    $requestPr = "https://api.github.com/repos/$organization/$repoName/pulls"
+    Write-Host "Executing request "$requestPr
+    $tokenHeader = "Bearer $gitHubToken"
+    $response = Invoke-WebRequest -Uri $requestPr -Headers @{"Authorization"=$tokenHeader}
+    $prs = $response | ConvertFrom-Json
+
+    if ($prs.user.login -eq $gitHubUser -And $prs.title -match 'Update (\d*) NuGet dependencies'){
+        $prNumber = $prs.number;
+        Write-Host "Auto merging"$prNumber
+        $mergeUrl = "https://api.github.com/repos/$organization/$repoName/pulls/$prNumber/merge"
+        $data = @{        
+            merge_method = "squash"
+        };
+        $json = $data | ConvertTo-Json;
+        Invoke-RestMethod -Method PUT -Uri $mergeUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader} -Body $json;
+
+        #TODO Remove branch
+        #$branch = 
+        #$delteBranchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/$branch"
+        #requests.delete(f"{API_URL}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH_NAME}")
+    }
+}
+
 
 Write-Host "Done"
