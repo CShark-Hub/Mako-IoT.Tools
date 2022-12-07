@@ -62,6 +62,7 @@ foreach ($repository in $repositories)
     #{
         #continue;
     #}
+    $env:NF_Library = $repository.name
 
     Write-Host "Trying to update"$repository.full_name
 
