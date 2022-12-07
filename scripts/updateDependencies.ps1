@@ -45,7 +45,6 @@ If (!(Test-CommandExists "nanodu"))
     dotnet tool install nanodu -g
     Write-Host "nanodu installed."
     dotnet nuget remove source nano
-    #TODO: remove nanoframework feed to keep config clean
 }
 $request = "https://api.github.com/orgs/$organization/repos?per_page=100"
 Write-Host "Executing request "$request
@@ -113,3 +112,4 @@ foreach ($repository in $repositories)
 
 
 Write-Host "Done"
+exit 0
