@@ -54,10 +54,10 @@ $repositories = $response | ConvertFrom-Json
 
 foreach ($repository in $repositories)
 {
-    if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Mqtt")
-    {
-        continue;
-    }
+    # if ($repository.full_name -notlike "*Mako-IoT.Device.Services.DependencyInjection")
+    # {
+    #     continue;
+    # }
 
     if ($repository.full_name -notlike "*Mako-IoT.Device*")
     {
@@ -73,12 +73,12 @@ foreach ($repository in $repositories)
     }
 
     $Expr  = 'nanodu --git-hub-user $gitHubUser --use-git-token-for-clone true --repo-owner $organization --repos-to-update $repository.name'
-    $Success = Invoke-Expression $Expr
+    Invoke-Expression $Expr
 
     #TODO: Error handling
-    # if(-not $Success){
+    #if(-not $Success){
     #    Write-Error "Error when trying to update repository"
-    # }
+    #}
     
     #break;
 }
@@ -93,16 +93,17 @@ foreach ($repository in $repositories)
     $response = Invoke-WebRequest -Uri $requestPr -Headers @{"Authorization"=$tokenHeader}
     $prs = $response | ConvertFrom-Json
 
-    if ($prs.user.login -eq $gitHubUser -And $prs.title -match 'Update (\d*) NuGet dependencies' -And $repository.full_name -notlike '*Mako-IoT.Device.Services.ConfigurationApi'){
+    if ($prs.user.login -eq $gitHubUser -And $prs.title -match 'Update (\d*) NuGet dependencies'){
         $prNumber = $prs.number;
         Write-Host "Auto merging "$prNumber
         $mergeUrl = "https://api.github.com/repos/$organization/$repoName/pulls/$prNumber/merge"
+        $data = @{        
+            merge_method = "squash"
+        };
+        $json = $data | ConvertTo-Json;
         Invoke-RestMethod -Method PUT -Uri $mergeUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader} -Body $json;
-        Write-Host 'Remove Branch '. $prs.head.ref ;
-        $branch = $prs.head.ref;
         #Remove branch
-        $branchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/heads/$branch"
-        Invoke-RestMethod -Method DELETE -Uri $branchUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader};
+        curl -s -X DELETE -u ${gitHubUser}:${gitHubToken} https://api.github.com/repos/${organization}/${repoName}/git/refs/heads/${branch}
      }
 }
 
