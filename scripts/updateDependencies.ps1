@@ -54,10 +54,10 @@ $repositories = $response | ConvertFrom-Json
 
 foreach ($repository in $repositories)
 {
-    # if ($repository.full_name -notlike "*Mako-IoT.Device.Services.DependencyInjection")
-    # {
-    #     continue;
-    # }
+    if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Messaging*")
+    {
+        continue;
+    }
 
     if ($repository.full_name -notlike "*Mako-IoT.Device*")
     {
@@ -65,7 +65,7 @@ foreach ($repository in $repositories)
     }
     $env:NF_Library = $repository.name
 
-    Write-Host "Trying to update "$repository.full_name
+    Write-Host "Trying to update"$repository.full_name
 
     if (Test-Path -Path $repository.name)
     {
@@ -95,16 +95,19 @@ foreach ($repository in $repositories)
 
     if ($prs.user.login -eq $gitHubUser -And $prs.title -match 'Update (\d*) NuGet dependencies'){
         $prNumber = $prs.number;
-        Write-Host "Auto merging "$prNumber
+        Write-Host "Auto merging"$prNumber
         $mergeUrl = "https://api.github.com/repos/$organization/$repoName/pulls/$prNumber/merge"
         $data = @{        
             merge_method = "squash"
         };
         $json = $data | ConvertTo-Json;
         Invoke-RestMethod -Method PUT -Uri $mergeUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader} -Body $json;
-        #Remove branch
-        curl -s -X DELETE -u ${gitHubUser}:${gitHubToken} https://api.github.com/repos/${organization}/${repoName}/git/refs/heads/${branch}
-     }
+
+        #TODO Remove branch
+        #$branch = 
+        #$delteBranchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/$branch"
+        #requests.delete(f"{API_URL}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH_NAME}")
+    }
 }
 
 
