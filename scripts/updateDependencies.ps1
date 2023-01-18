@@ -101,8 +101,8 @@ foreach ($repository in $repositories)
         Write-Host 'Remove Branch '. $prs.head.ref ;
         $branch = $prs.head.ref;
         #Remove branch
-        $branchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/heads/$branch"
-        Invoke-RestMethod -Method DELETE -Uri $branchUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader};
+         $branchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/heads/$branch"
+         Invoke-RestMethod -Method DELETE -Uri $branchUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader};
      }
 }
 
