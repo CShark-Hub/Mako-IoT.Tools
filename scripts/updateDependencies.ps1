@@ -73,7 +73,7 @@ foreach ($repository in $repositories)
     }
 
     $Expr  = 'nanodu --git-hub-user $gitHubUser --use-git-token-for-clone true --repo-owner $organization --repos-to-update $repository.name'
-    $Success = Invoke-Expression $Expr
+    Invoke-Expression $Expr
 
     #TODO: Error handling
     # if(-not $Success){
