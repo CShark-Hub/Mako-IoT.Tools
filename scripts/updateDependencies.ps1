@@ -54,10 +54,10 @@ $repositories = $response | ConvertFrom-Json
 
 foreach ($repository in $repositories)
 {
-    if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Messaging*")
-    {
-        continue;
-    }
+    # if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Messaging*")
+    # {
+    #     continue;
+    # }
 
     if ($repository.full_name -notlike "*Mako-IoT.Device*")
     {
