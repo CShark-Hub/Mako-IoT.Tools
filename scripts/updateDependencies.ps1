@@ -54,10 +54,10 @@ $repositories = $response | ConvertFrom-Json
 
 foreach ($repository in $repositories)
 {
-    if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Messaging*")
-    {
-        continue;
-    }
+    # if ($repository.full_name -notlike "*Mako-IoT.Device.Services.Messaging*")
+    # {
+    #     continue;
+    # }
 
     if ($repository.full_name -notlike "*Mako-IoT.Device*")
     {
@@ -102,12 +102,13 @@ foreach ($repository in $repositories)
         };
         $json = $data | ConvertTo-Json;
         Invoke-RestMethod -Method PUT -Uri $mergeUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader} -Body $json;
+        Write-Host 'Remove Branch '. $prs.head.ref ;
+        $branch = $prs.head.ref;
+        #Remove branch
+        $branchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/heads/$branch"
+        Invoke-RestMethod -Method DELETE -Uri $branchUrl -ContentType "application/json" -Headers @{"Authorization"=$tokenHeader};
+     }
 
-        #TODO Remove branch
-        #$branch = 
-        #$delteBranchUrl = "https://api.github.com/repos/$organization/$repoName/git/refs/$branch"
-        #requests.delete(f"{API_URL}/repos/{OWNER}/{REPO}/git/refs/heads/{BRANCH_NAME}")
-    }
 }
 
 
