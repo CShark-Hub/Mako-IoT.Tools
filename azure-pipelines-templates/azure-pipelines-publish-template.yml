@@ -41,7 +41,13 @@ steps:
   displayName: Nuget Pack
   inputs:
     command: 'custom' 
-    arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion)'
+    arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion) -OutputDirectory $(Build.ArtifactStagingDirectory)'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)\..\**\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    ArtifactName: $(packageName)
+    publishLocation: 'Container'
+
+- script: nuget push $(Build.ArtifactStagingDirectory)\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
   displayName: nuget push
