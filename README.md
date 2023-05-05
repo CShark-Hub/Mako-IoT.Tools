@@ -1,1 +1,2 @@
-# MakoIoT.Device.Utilities.ICalParser
+# Mako-IoT.Tools
+Various developer tools.
