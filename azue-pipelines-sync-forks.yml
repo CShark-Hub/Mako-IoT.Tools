@@ -11,7 +11,7 @@ variables:
 - name: Organization
   value: 'CShark-Hub'
 - name: BaseForkRepository
-  value: 'Mako-IoT.Base'
+  value: 'Mako-IoT.Device.Base'
 - name: TargetBranch
   value: 'main'
 
