@@ -5,7 +5,6 @@ param(
 [Parameter(Mandatory=$true)][String]$gitHubToken)
 
 $ErrorActionPreference = "Stop"
-$apiVersion = "2022-11-28"
 
 Function Test-CommandExists
 {
@@ -59,7 +58,7 @@ If (!(Test-CommandExists "gh"))
 $request = "https://api.github.com/repos/$organization/$baseRepository/forks?per_page=100"
 Write-Host "Executing request "$request
 $tokenHeader = "Bearer $gitHubToken"
-$headers = @{"Authorization" = $tokenHeader, "X-GitHub-Api-Version" = $apiVersion}
+$headers = @{"Authorization" = $tokenHeader, "X-GitHub-Api-Version" = "2022-11-28"}
 $response = Invoke-WebRequest -Uri $request -Headers $headers
 $repositories = $response | ConvertFrom-Json
 
