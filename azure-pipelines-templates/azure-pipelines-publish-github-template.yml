@@ -49,5 +49,5 @@ steps:
     ArtifactName: $(packageName)
     publishLocation: 'Container'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)\$(packageName).$(GitBuildVersion).nupkg -Source nuget.org -ApiKey $(nugetToken)
+- script: nuget push $(Build.ArtifactStagingDirectory)\$(packageName).$(GitBuildVersion).nupkg -Source mako-iot -ApiKey $(githubToken)
   displayName: nuget push
