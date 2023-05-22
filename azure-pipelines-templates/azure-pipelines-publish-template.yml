@@ -22,9 +22,7 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: '$(solution)'
-    feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config'
-    externalFeedCredentials: 'CSharkGithubNuget2'
+    feedsToUse: 'select'
 
 - script: nbgv cloud -a -c
   displayName: Set Version
