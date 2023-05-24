@@ -25,58 +25,6 @@ Function Test-CommandExists {
     }
 }
 
-function IsPrCreatedByNanodu {
-    Param ($login, $title)
-
-    if ($login -eq $gitHubUser -And $prs.title -match 'Update (\d*) NuGet dependencies') {
-        return $true
-    }
-
-    return $false
-}
-
-function SetPrMergeSqush {
-    param ($prNumber)
-    Write-Host "Auto merging"$prNumber
-    $url = "https://api.github.com/repos/$organization/$repoName/pulls/$prNumber/merge"
-    $data = @{        
-        merge_method = "squash"
-    };
-    $json = $data | ConvertTo-Json;
-    Invoke-RestMethod -Method PUT -Uri $url -ContentType "application/json" -Headers @{"Authorization" = $tokenHeader } -Body $json;
-}
-
-function DeleteBranch {
-    param ($prBranchName)
-    Write-Host 'Remove Branch'$prBranchName ;
-    $url = "https://api.github.com/repos/$organization/$repoName/git/refs/heads/$prBranchName"
-    Invoke-RestMethod -Method DELETE -Uri $url -ContentType "application/json" -Headers @{"Authorization" = $tokenHeader };
-}
-
-function CanSafeDeleteBranch {
-    param ($prNumber)
-    param ($retry = 0)
-
-    Write-Host 'Check if branch is safe to delete. Retry'$prBranchName ;
-    $url = "https://api.github.com/repos/$organization/$repoName/pulls/$prNumber"
-    $response = Invoke-WebRequest -Uri $url -Headers @{"Authorization" = $tokenHeader }
-    $pr = $response | ConvertFrom-Json
-
-    if ($pr.state -eq 'closed'){
-        return
-    }
-
-    if ($retry -eq $maxRetryCount){
-        Write-Warning 'Unable to delete branch from PR '$prNumber
-        return
-    }
-
-    Write-Host 'Waiting for' $sleepBetweenRetries 'before checking if delete is safe.'
-    Start-Sleep $sleepBetweenRetries
-    $newRetry = $retry + 1;
-    CanSafeDeleteBranch $prNumber $newRetry 
-}
-
 Write-Host "Running script with parameters: "
 Write-Host "Organization: $organization"
 Write-Host "GitHub user: $gitHubUser"
@@ -116,31 +64,6 @@ foreach ($repository in $repositories) {
 
     $Expr = 'nanodu --git-hub-user $gitHubUser --use-git-token-for-clone true --repo-owner $organization --repos-to-update $repository.name'
     Invoke-Expression $Expr
-}
-
-Write-Host "Sleeping for" $SleepTimeInSecondsToRunChecks " to allow GitHub to initialize checks"
-Start-Sleep $SleepTimeInSecondsToRunChecks
-
-# Close any PR if created by nanodu
-foreach ($repository in $repositories) {
-    $repoName = $repository.name
-    $requestPr = "https://api.github.com/repos/$organization/$repoName/pulls"
-    Write-Host "Executing request "$requestPr
-    $tokenHeader = "Bearer $gitHubToken"
-    $response = Invoke-WebRequest -Uri $requestPr -Headers @{"Authorization" = $tokenHeader }
-    $prs = $response | ConvertFrom-Json
-
-    foreach ($pr in $prs) {
-        if (!(IsPrCreatedByNanodu $prs.user.login $prs.title)) {
-            continue
-        }
-    
-        SetPrMergeSqush $pr.number  
-        
-        if (CanSafeDeleteBranch $pr.number) {
-            DeleteBranch $prs.head.ref
-        }
-    }
 }
 
 Write-Host "Done"
