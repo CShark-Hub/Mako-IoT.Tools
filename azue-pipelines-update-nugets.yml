@@ -11,7 +11,7 @@ variables:
 - name: Organization
   value: 'CShark-Hub'
 - name: GitHubUser
-  value: 'torbacz'
+  value: 'nanodu'
 - name: NuGetSource
   value: 'https://nuget.pkg.github.com/CShark-Hub/index.json'
 - name: NuGetFeedName
