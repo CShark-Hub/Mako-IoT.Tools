@@ -10,6 +10,7 @@ steps:
 
 - task: NuGetCommand@2
   displayName: Restore NuGet packages
+  retryCountOnTaskFailure: 3
   inputs:
     command: 'restore'
     restoreSolution: '$(solution)'
