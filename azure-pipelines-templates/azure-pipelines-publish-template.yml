@@ -3,14 +3,17 @@ steps:
   fetchDepth: 0
 
 - task: InstallNanoMSBuildComponents@1
+  retryCountOnTaskFailure: 3
   displayName: Install nanoFramework MSBuild components
   env:
     GITHUB_TOKEN: $(githubToken)
 
 - task: NuGetToolInstaller@1
+  retryCountOnTaskFailure: 3
   displayName: Install NuGet
 
 - task: DotNetCoreCLI@2  
+  retryCountOnTaskFailure: 3
   displayName: Install NBGV tool
   inputs:
     command: custom

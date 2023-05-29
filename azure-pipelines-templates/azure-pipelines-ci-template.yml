@@ -3,9 +3,11 @@ steps:
   fetchDepth: 0
 
 - task: InstallNanoMSBuildComponents@1
+  retryCountOnTaskFailure: 3
   displayName: Install nanoFramework MSBuild components
 
 - task: NuGetToolInstaller@1
+  retryCountOnTaskFailure: 3
   displayName: Install NuGet
 
 - task: NuGetCommand@2
