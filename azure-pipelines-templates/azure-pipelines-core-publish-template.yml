@@ -2,12 +2,6 @@ steps:
 - checkout: self
   fetchDepth: 0
   
-- task: UseDotNet@2
-  displayName: Use .NET 6.0
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.x'  
-
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
   
@@ -20,12 +14,11 @@ steps:
 
 - task: NuGetCommand@2
   displayName: Restore NuGet packages
+  retryCountOnTaskFailure: 3
   inputs:
     command: 'restore'
-    restoreSolution: '**/$(nugetProjectName)'
-    feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config'
-    externalFeedCredentials: 'CSharkGithubNuget2'
+    restoreSolution: '$(solution)'
+    feedsToUse: 'select'
 
 - script: nbgv cloud -a -c
   displayName: Set Version
@@ -40,5 +33,5 @@ steps:
     versionEnvVar: 'GitBuildVersion'
     buildProperties: 'SymbolPackageFormat=snupkg'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -Source mako-iot -ApiKey $(githubToken)
+- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -Source mako-iot -ApiKey $(nugetToken)
   displayName: nuget push

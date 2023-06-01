@@ -1,24 +1,17 @@
 steps:
 - checkout: self
   fetchDepth: 0
-
-- task: UseDotNet@2
-  displayName: Use .NET 6.0
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.x'
-          
+         
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
 
 - task: NuGetCommand@2
   displayName: Restore NuGet packages
+  retryCountOnTaskFailure: 3
   inputs:
     command: 'restore'
     restoreSolution: '$(solution)'
-    feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config'
-    externalFeedCredentials: 'CSharkGithubNuget2'
+    feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
   displayName: Build
