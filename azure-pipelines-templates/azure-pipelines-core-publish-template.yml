@@ -23,15 +23,19 @@ steps:
 - script: nbgv cloud -a -c
   displayName: Set Version
   
-- task: DotNetCoreCLI@2
-  displayName: 'Pack NuGet version $(GitBuildVersion)'
+  - task: VSBuild@1
+  displayName: Build solution
   inputs:
-    command: 'pack'
-    packagesToPack: '**/$(nugetProjectName)'
-    includesymbols: true
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'GitBuildVersion'
-    buildProperties: 'SymbolPackageFormat=snupkg'
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    msbuildArchitecture: x64
+  
+- task: NuGetCommand@2
+  displayName: Nuget Pack
+  inputs:
+    command: 'custom' 
+    arguments: 'pack $(packageName).nuspec -Version $(GitBuildVersion) -OutputDirectory $(Build.ArtifactStagingDirectory)'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -Source mako-iot -ApiKey $(nugetToken)
+- script: nuget push $(Build.ArtifactStagingDirectory)\$(packageName).$(GitBuildVersion).nupkg -Source nuget.org -ApiKey $(nugetToken)
   displayName: nuget push
